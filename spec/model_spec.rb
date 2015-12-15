@@ -4,7 +4,7 @@ require 'odd/model'
 describe Odd::Model do
   context 'variables' do
     let( :obj ) do
-      Odd::Model.var :integer, default: 1
+      Odd::Model.attribute :integer, default: 1
       obj = Odd::Model.new
     end
 

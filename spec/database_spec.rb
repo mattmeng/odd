@@ -3,7 +3,7 @@ require 'odd/database'
 
 describe Odd::Database do
   context 'initialize' do
-    it "can be initializes with a valid path" do
+    it "can be initialized with a valid path" do
       expect( Odd::Database.new( File.dirname( __FILE__ ) ) ).to be_a Odd::Database
     end
 

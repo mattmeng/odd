@@ -5,11 +5,15 @@ module Odd
     class DatabaseDoesNotExist < OddException; end
     class NoOpenDatabase < OddException; end
 
+    OBJECT_DIR = '/objects'
+
     attr_reader :path
 
     def initialize( path )
       raise DatabaseDoesNotExist unless File.directory?( path )
       @path = path
+
+      Dir.mkdir( object_path() ) unless File.directory?( object_path() )
     end
 
     def self.instance
@@ -19,6 +23,10 @@ module Odd
 
     def self.open( path )
       return @@instance = self.new( path )
+    end
+
+    def object_path
+      return @path + OBJECT_DIR
     end
   end
 end

@@ -13,7 +13,7 @@ module Odd
     end
 
     def self.instance
-      raise NoOpenDatabase unless class_variable_defined?( :@@instance )
+      raise NoOpenDatabase unless class_variable_defined?( :@@instance ) and @@instance
       return @@instance
     end
 

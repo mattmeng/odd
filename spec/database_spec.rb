@@ -2,46 +2,31 @@ require 'spec_helper'
 require 'odd/database'
 
 describe Odd::Database do
-  it "can be initializes with a valid path" do
-    expect(  )
+  context 'initialize' do
+    it "can be initializes with a valid path" do
+      expect( Odd::Database.new( File.dirname( __FILE__ ) ) ).to be_a Odd::Database
+    end
+
+    it 'will return an exception with an invalid path' do
+      expect {Odd::Database.new( '' )}.to raise_error( Odd::Database::DatabaseDoesNotExist )
+    end
   end
-  # context 'instance' do
-  #   it "adds" do
-  #     expect( obj.instance_variable_defined?( :@integer ) ).to eq true
-  #     expect( obj.respond_to?( :integer ) ).to eq true
-  #     expect( obj.respond_to?( :integer= ) ).to eq true
-  #   end
 
-  #   it "can be added with a default" do
-  #     expect( obj.integer ).to eq 1
-  #   end
-  # end
-end
-
-
-
-
-require 'odd/exceptions'
-
-module Odd
-  class Database
-    class DatabaseDoesNotExist < OddException; end
-    class NoOpenDatabase < OddException; end
-
-    attr_reader :path
-
-    def initialize( path )
-      raise DatabaseDoesNotExist unless File.directory?( path )
-      @path = path
+  context 'instance' do
+    it 'returns an instance of itself' do
+      Odd::Database.class_variable_set( :@@instance, true )
+      expect( Odd::Database.instance ).to be true
     end
 
-    def self.instance
-      raise NoOpenDatabase unless class_variable_defined?( :@@instance )
-      return @@instance
+    it 'raises an exception when there is no instance' do
+      Odd::Database.class_variable_set( :@@instance, nil )
+      expect {Odd::Database.instance}.to raise_error( Odd::Database::NoOpenDatabase )
     end
+  end
 
-    def self.open( path )
-      return @@instance = self.new( path )
+  context 'open' do
+    it 'opens a database' do
+      expect( Odd::Database.open( File.dirname( __FILE__ ) ) ).to be_a Odd::Database
     end
   end
 end

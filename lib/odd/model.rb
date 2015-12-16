@@ -1,3 +1,4 @@
+require 'securerandom'
 require 'odd/jsonable'
 
 module Odd

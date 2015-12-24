@@ -1,5 +1,6 @@
 require 'securerandom'
 require 'odd/jsonable'
+require 'odd/database'
 
 module Odd
   class Model
@@ -32,12 +33,12 @@ module Odd
     end
 
     def save
-      File.write( object_path(), self.to_json )
+      File.write( @object_path, self.to_json )
     end
 
     def self.attribute( attribute_name, default: nil, permissions: :rw )
       attribute_name = attribute_name.to_sym
-      raise InvalidAttributeName if attribute_name == :uuid
+      raise InvalidAttributeName if attribute_name == :uuid or attribute_name == :object_path
 
       @@attribute_defaults[attribute_name] = default
 

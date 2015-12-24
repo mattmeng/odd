@@ -4,17 +4,19 @@ require 'securerandom'
 require 'fileutils'
 
 RSpec.configure do |config|
+  config.add_setting :database_dir
+
   config.before( :suite ) do
     begin
       dir = File.join( __dir__, SecureRandom.uuid )
       unless File.directory?( dir )
         Dir.mkdir( dir )
-        @database_dir = dir
+        config.database_dir = dir
       end
-    end until @database_dir
+    end until config.database_dir
   end
 
   config.after( :suite ) do
-    FileUtils.rm_rf( @database_dir )
+    FileUtils.rm_rf( config.database_dir )
   end
 end

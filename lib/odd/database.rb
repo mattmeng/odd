@@ -28,5 +28,9 @@ module Odd
     def object_path
       return @path + OBJECT_DIR
     end
+
+    def self.object_path
+      return instance.object_path
+    end
   end
 end

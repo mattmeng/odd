@@ -21,6 +21,7 @@ module Odd
       if file
         raise NoObjectFound unless File.exists?( file )
         self.from_json!( File.read( file ) )
+        @object_path = object_path
       else
         begin
           @uuid = SecureRandom.uuid
@@ -33,7 +34,11 @@ module Odd
     end
 
     def save
-      File.write( @object_path, self.to_json )
+      File.write( @object_path, self.to_json() )
+    end
+
+    def to_json( exclude: [] )
+      return super( exclude: [:object_path] + exclude )
     end
 
     def self.attribute( attribute_name, default: nil, permissions: :rw )

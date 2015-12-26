@@ -6,10 +6,11 @@ module Odd
       base.extend( StaticMethods )
     end
 
-    def to_json
+    def to_json( exclude: [] )
       hash = {}
       self.instance_variables.each do |var|
-        hash[var.to_s.tr( '@', '' )] = self.instance_variable_get var
+        key = var.to_s.tr( '@', '' ).to_sym
+        hash[key] = self.instance_variable_get( var ) unless exclude.include?( key )
       end
       return hash.to_json
     end

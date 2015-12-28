@@ -1,26 +1,26 @@
 require 'odd/database'
-require 'odd/model'
+require 'odd/exceptions'
 require 'active_support/inflector'
 
 module Odd
   class Models
+    class NoRecordClassFound < OddException; end
+    
     def self.object_path
       dir = File.join( Odd::Database.object_path(), self.to_s.downcase.demodulize )
       Dir.mkdir( dir ) unless File.directory?( dir )
       return dir
     end
 
-    def self.set_model( model )
-      return @@model = model
+    def self.model
+      return self.to_s.singularize.constantize
+    rescue NameError => e
+      raise NoRecordClassFound.new
     end
 
-    def self.find( uuid: nil )
-      return @@model.from_json( File.read( File.join( Odd::Database.instance.object_path, @uid ) ) ) if uuid
+    def self.filter( uuid: nil )
+      return model.from_json( File.read( File.join( object_path, uuid ) ) ) if uuid
       return nil
-    end
-
-    def self.where( *args )
-
     end
   end
 end

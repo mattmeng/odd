@@ -1,13 +1,16 @@
 require 'spec_helper'
 require 'odd/model'
+require 'odd/database'
 require 'json'
 
 describe Odd::Model do
   let( :database_dir ) { RSpec.configuration.database_dir }
 
+  before( :all ) { Odd::Database.open( RSpec.configuration.database_dir ) }
+
   context 'initialize' do
     it 'can be initialized without a file' do
-      expect( Odd::Model.new( object_path: database_dir ).uuid ).to be_a( String )
+      expect( Odd::Model.new.uuid ).to be_a( String )
     end
 
     it 'can be initialize with a file' do
@@ -37,7 +40,7 @@ describe Odd::Model do
   context 'save' do
     it 'can save to a file' do
       Odd::Model.attribute :integer, default: 1
-      model = Odd::Model.new( object_path: database_dir )
+      model = Odd::Model.new
       model.save
       json = JSON.parse( File.read( model.object_path ) )
       expect( model.uuid ).to eq( json['uuid'] )

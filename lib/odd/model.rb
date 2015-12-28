@@ -1,40 +1,44 @@
 require 'securerandom'
 require 'odd/jsonable'
-require 'odd/database'
+require 'odd/models'
+require 'odd/exceptions'
+require 'active_support/inflector'
 
 module Odd
   class Model
     include JSONable
 
     class NoObjectFound < OddException; end
+    class NoFactoryClassFound < OddException; end
+    class InvalidAttributeName < OddException; end
 
     attr_reader :uuid
-    attr_reader :object_path
-
-    READ = :r
-    WRITE = :w
-    READ_WRITE = :rw
 
     @@attribute_defaults = {}
 
-    def initialize( file: nil, object_path: Odd::Database.object_path )
+    def initialize( file: nil )
       if file
         raise NoObjectFound unless File.exists?( file )
         self.from_json!( File.read( file ) )
-        @object_path = object_path
       else
         begin
           @uuid = SecureRandom.uuid
-          @object_path = File.join( object_path, @uuid )
         end while File.exists?( object_path() )
 
-        # Set default values
+        # Set default values.
         @@attribute_defaults.each {|key, value| instance_variable_set( "@#{key}", value )}
       end
     end
 
+    def object_path
+      factory = self.class.to_s.pluralize.constantize
+      return File.join( factory.object_path(), @uuid )
+    rescue NameError => e
+      raise NoFactoryClassFound.new
+    end
+
     def save
-      File.write( @object_path, self.to_json() )
+      File.write( object_path(), self.to_json() )
     end
 
     def to_json( exclude: [] )

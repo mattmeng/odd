@@ -31,6 +31,8 @@ module Odd
     def self.object_path
       dir = File.join( Odd::Database.object_path(), self.to_s.downcase.demodulize )
       Dir.mkdir( dir ) unless File.directory?( dir )
+      index_dir = File.join( dir, 'index' )
+      Dir.mkdir( index_dir ) unless File.directory?( index_dir )
       return dir
     end
 

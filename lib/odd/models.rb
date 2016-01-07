@@ -5,7 +5,29 @@ require 'active_support/inflector'
 module Odd
   class Models
     class NoRecordClassFound < OddException; end
-    
+
+    attr_reader :indices
+
+    def initialize
+      @indices = []
+    end
+
+    def add_index( *attributes )
+      @indices |= attributes
+    end
+
+    def self.instance
+      return @@instance ||= self.new
+    end
+
+    def self.add_index( *attributes )
+      self.instance
+    end
+
+    def self.add_to_indices( obj )
+
+    end
+
     def self.object_path
       dir = File.join( Odd::Database.object_path(), self.to_s.downcase.demodulize )
       Dir.mkdir( dir ) unless File.directory?( dir )

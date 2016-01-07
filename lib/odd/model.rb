@@ -31,23 +31,17 @@ module Odd
     end
 
     def object_path
-      factory = self.class.to_s.pluralize.constantize
-      return File.join( factory.object_path(), @uuid )
-    rescue NameError => e
-      raise NoFactoryClassFound.new
+      return File.join( self.models.object_path(), @uuid )
     end
 
     def save
+      self.models.add_to_indices( self )
       File.write( object_path(), self.to_json() )
-    end
-
-    def to_json( exclude: [] )
-      return super( exclude: [:object_path] + exclude )
     end
 
     def self.attribute( attribute_name, default: nil, permissions: :rw )
       attribute_name = attribute_name.to_sym
-      raise InvalidAttributeName if attribute_name == :uuid or attribute_name == :object_path
+      raise InvalidAttributeName if attribute_name == :uuid
 
       @@attribute_defaults[attribute_name] = default
 
@@ -58,6 +52,12 @@ module Odd
       define_method( attribute_name ) do
         return instance_variable_get( "@#{attribute_name}" )
       end
+    end
+
+    def self.models
+      return self.to_s.pluralize.constantize
+    rescue NameError => e
+      raise NoFactoryClassFound.new
     end
   end
 end

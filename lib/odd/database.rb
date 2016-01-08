@@ -6,6 +6,7 @@ module Odd
     class NoOpenDatabase < OddException; end
 
     OBJECT_DIR = '/objects'
+    INDEX_DIR = '/indices'
 
     attr_reader :path
 
@@ -14,6 +15,7 @@ module Odd
       @path = path
 
       Dir.mkdir( object_path() ) unless File.directory?( object_path() )
+      Dir.mkdir( index_path() ) unless File.directory?( index_path() )
     end
 
     def self.instance
@@ -29,8 +31,16 @@ module Odd
       return @path + OBJECT_DIR
     end
 
+    def index_path
+      return @path + INDEX_DIR
+    end
+
     def self.object_path
       return instance.object_path
+    end
+
+    def self.index_path
+      return instance.index_path
     end
   end
 end

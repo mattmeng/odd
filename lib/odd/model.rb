@@ -9,7 +9,7 @@ module Odd
     include JSONable
 
     class NoObjectFound < OddException; end
-    class NoFactoryClassFound < OddException; end
+    class NoTableClassFound < OddException; end
     class InvalidAttributeName < OddException; end
 
     attr_reader :uuid
@@ -57,7 +57,7 @@ module Odd
     def self.models
       return self.to_s.pluralize.constantize
     rescue NameError => e
-      raise NoFactoryClassFound.new
+      raise NoTableClassFound.new
     end
   end
 end

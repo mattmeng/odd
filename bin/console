@@ -8,6 +8,13 @@ require "odd"
 
 begin
   require "pry"
+
+  Pry.config.hooks.add_hook( :when_started, :initialize_tree ) do
+    $tree = Odd::Indices::Index.new( 'models', :test )
+    (1..1024).each {|x| $tree << {key: x, values: SecureRandom.uuid}}
+    $tree.rebalance!
+  end
+
   Pry.start
 rescue LoadError => e
   puts "Couldn't load Pry. :( " + e.message

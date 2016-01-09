@@ -31,11 +31,11 @@ module Odd
     end
 
     def object_path
-      return File.join( self.models.object_path(), @uuid )
+      return File.join( self.class.models.object_path(), @uuid )
     end
 
     def save
-      self.models.add_to_indices( self )
+      self.class.models.add_to_indices( self )
       File.write( object_path(), self.to_json() )
     end
 

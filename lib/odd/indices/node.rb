@@ -74,12 +74,36 @@ module Odd
         return nil
       end
 
+      def ==( key )
+        return @key == key
+      end
+
       def <=>( other_node )
         return key <=> other_node.key
       end
 
-      def ==( key )
-        return @key == key
+      def <( key )
+        return (@left ? @left < key : []) +               # Left side
+          ((@key < key) ? @values : []) +                 # This values
+          (((@key < key) and @right) ? @right < key : []) # Right side
+      end
+
+      def <=( key )
+        return (@left ? @left <= key : []) +                # Left side
+          ((@key <= key) ? @values : []) +                  # This values
+          (((@key <= key) and @right) ? @right <= key : []) # Right side
+      end
+
+      def >( key )
+        return (((@key > key) and @left) ? @left > key : []) + # Left side
+          ((@key > key) ? @values : []) +                      # This values
+          (@right ? @right > key : [])                         # Right side
+      end
+
+      def >=( key )
+        return (((@key >= key) and @left) ? @left >= key : []) + # Left side
+          ((@key >= key) ? @values : []) +                       # This values
+          (@right ? @right >= key : [])                          # Right side
       end
 
       def to_a

@@ -56,6 +56,11 @@ module Odd
         out.close
       end
 
+      def save!
+        rebalance!
+        save
+      end
+
       def self.load( io )
         io = File.open( io, 'r' ) unless io.kind_of?( File )
         return Marshal.load( io )

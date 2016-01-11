@@ -75,32 +75,38 @@ module Odd
       end
 
       def ==( key )
+        key = key.key if key.kind_of?( Node )
         return @key == key
       end
 
-      def <=>( other_node )
-        return key <=> other_node.key
+      def <=>( key )
+        key = key.key if key.kind_of?( Node )
+        return @key <=> key
       end
 
       def <( key )
+        key = key.key if key.kind_of?( Node )
         return (@left ? @left < key : []) +               # Left side
           ((@key < key) ? @values : []) +                 # This values
           (((@key < key) and @right) ? @right < key : []) # Right side
       end
 
       def <=( key )
+        key = key.key if key.kind_of?( Node )
         return (@left ? @left <= key : []) +                # Left side
           ((@key <= key) ? @values : []) +                  # This values
           (((@key <= key) and @right) ? @right <= key : []) # Right side
       end
 
       def >( key )
+        key = key.key if key.kind_of?( Node )
         return (((@key > key) and @left) ? @left > key : []) + # Left side
           ((@key > key) ? @values : []) +                      # This values
           (@right ? @right > key : [])                         # Right side
       end
 
       def >=( key )
+        key = key.key if key.kind_of?( Node )
         return (((@key >= key) and @left) ? @left >= key : []) + # Left side
           ((@key >= key) ? @values : []) +                       # This values
           (@right ? @right >= key : [])                          # Right side
@@ -113,7 +119,10 @@ module Odd
       end
 
       def self.[]( *right )
-        left = right.slice!( 0..(right.length / 2 - 1) )
+        right = right.first if (right.length == 1) and right.first.kind_of?( Array )
+        right = right.clone # We don't want to jack up the calling entities copy
+
+        left = right.slice!( 0..(right.length / 2) )
         root = left.pop
 
         root = Node.new( root[:key], root[:values] )

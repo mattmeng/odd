@@ -7,15 +7,15 @@ module Odd
     class Index
       class InvalidFileHandle < OddException; end
 
-      attr_reader :model
+      attr_reader :models
       attr_reader :attribute
       attr_reader :root
 
-      def initialize( models, attribute )
+      def initialize( models, attribute, root = nil )
         @index = nil
-        @models = models.to_s.downcase
+        @models = models.to_s.downcase.pluralize
         @attribute = attribute
-        @root = nil
+        @root = root
       end
 
       def path
@@ -64,6 +64,10 @@ module Odd
       def self.load( io )
         io = File.open( io, 'r' ) unless io.kind_of?( File )
         return Marshal.load( io )
+      end
+
+      def self.[]( models, attribute, *right )
+        return self.new( models, attribute, Node[*right] )
       end
     end
   end

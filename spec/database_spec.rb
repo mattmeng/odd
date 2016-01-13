@@ -28,7 +28,7 @@ describe Odd::Database do
 
   context 'open' do
     it 'opens a database' do
-      expect( Odd::Database.open( File.dirname( __FILE__ ) ) ).to be_a Odd::Database
+      expect( Odd::Database.open( database_dir ) ).to be_a Odd::Database
     end
   end
 end

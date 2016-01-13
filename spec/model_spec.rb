@@ -22,7 +22,7 @@ describe Odd::Model do
 
   context 'variables' do
     let( :obj ) do
-      Odd::Model.attribute :integer, default: 1
+      Odd::Model.attribute( :integer, default: 1 )
       obj = Odd::Model.new
     end
 
@@ -33,7 +33,12 @@ describe Odd::Model do
     end
 
     it "can be added with a default" do
-      expect( obj.integer ).to eq 1
+      expect( obj.integer ).to eq( 1 )
+    end
+
+    it "can be changed" do
+      obj.integer = 2
+      expect( obj.integer ).to eq( 2 )
     end
   end
 

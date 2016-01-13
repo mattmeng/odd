@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'odd/indices/index'
+require 'odd/indices/node'
 
 describe Odd::Indices::Index do
   let( :legend ) do
@@ -52,6 +53,7 @@ describe Odd::Indices::Index do
 
   context 'saving and loading' do
     after( :each ) {File.delete( index.path() )}
+
     it 'can save' do
       index.save
       expect( File.exists?( index.path() ) ).to be( true )
@@ -67,6 +69,21 @@ describe Odd::Indices::Index do
       io = File.open( index.path, 'r' )
       index2 = Odd::Indices::Index.load( io )
       expect( index2 ).to be_a( Odd::Indices::Index )
+    end
+  end
+
+  context 'static []' do
+    it 'can create a new index object with data' do
+      idx = Odd::Indices::Index['Test', :test, Odd::Indices::Node[legend]]
+      expect( idx ).not_to be_nil
+      expect( idx.is_a?( Odd::Indices::Index ) ).to be( true )
+    end
+
+    it 'can create a new index object with a file' do
+      index.save
+      idx = Odd::Indices::Index[index.path()]
+      expect( idx ).not_to be_nil
+      expect( idx.is_a?( Odd::Indices::Index ) ).to be( true )
     end
   end
 end

@@ -2,9 +2,11 @@ require 'spec_helper'
 require 'odd/database'
 
 describe Odd::Database do
+  let( :database_dir ) { RSpec.configuration.database_dir }
+
   context 'initialize' do
     it "can be initialized with a valid path" do
-      expect( Odd::Database.new( File.dirname( __FILE__ ) ) ).to be_a Odd::Database
+      expect( Odd::Database.new( database_dir ) ).to be_a Odd::Database
     end
 
     it 'will return an exception with an invalid path' do
@@ -15,7 +17,7 @@ describe Odd::Database do
   context 'instance' do
     it 'returns an instance of itself' do
       Odd::Database.class_variable_set( :@@instance, true )
-      expect( Odd::Database.instance ).to be true
+      expect( Odd::Database.instance ).to be_truthy
     end
 
     it 'raises an exception when there is no instance' do

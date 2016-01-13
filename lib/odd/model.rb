@@ -8,7 +8,7 @@ module Odd
   class Model
     include JSONable
 
-    class NoObjectFound < OddException; end
+    class NoObjectFileFound < OddException; end
     class NoTableClassFound < OddException; end
     class InvalidAttributeName < OddException; end
 
@@ -18,7 +18,7 @@ module Odd
 
     def initialize( file: nil )
       if file
-        raise NoObjectFound unless File.exists?( file )
+        raise NoObjectFileFound.new( "No object file found at #{file}." ) unless File.exists?( file )
         self.from_json!( File.read( file ) )
       else
         begin
@@ -26,7 +26,7 @@ module Odd
         end while File.exists?( object_path() )
 
         # Set default values.
-        @@attribute_defaults.each {|key, value| instance_variable_set( "@#{key}", value )}
+        @@attribute_defaults.each {|key, value| self.send( "#{key}=".to_sym, value )}
       end
     end
 
@@ -35,7 +35,6 @@ module Odd
     end
 
     def save
-      self.class.models.add_to_indices( self )
       File.write( object_path(), self.to_json() )
     end
 

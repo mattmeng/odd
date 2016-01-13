@@ -9,26 +9,15 @@ module Odd
     attr_reader :indices
 
     def initialize
-      @indices = []
+      @indices = {}
     end
 
-    def add_index( *attributes )
-      @indices |= attributes
+    def filter( uuid: nil )
+      return model.from_json( File.read( File.join( object_path, uuid ) ) ) if uuid
+      return nil
     end
 
-    def self.instance
-      return @@instance ||= self.new
-    end
-
-    def self.add_index( *attributes )
-      self.instance
-    end
-
-    def self.add_to_indices( obj )
-
-    end
-
-    def self.object_path
+    def object_path
       dir = File.join( Odd::Database.object_path(), self.to_s.downcase.demodulize )
       Dir.mkdir( dir ) unless File.directory?( dir )
       index_dir = File.join( dir, 'index' )
@@ -36,15 +25,27 @@ module Odd
       return dir
     end
 
-    def self.model
+    def model
       return self.to_s.singularize.constantize
     rescue NameError => e
       raise NoRecordClassFound.new
     end
 
-    def self.filter( uuid: nil )
-      return model.from_json( File.read( File.join( object_path, uuid ) ) ) if uuid
-      return nil
+    def index( name, *attributes )
+      raise ArgumentError.new( 'Index name already exists.' ) if @indices.key?( name )
+      attributes.each do |attribute|
+        raise ArgumentError.new( 'Call to Models.index requires an array of symbols.' ) unless attribute.is_a?( Symbol )
+      end
+
+      # @indices[name] =
+    end
+
+    def self.instance
+      return @@instance ||= self.new
+    end
+
+    def self.method_missing( method, *args, &block )
+      return self.instance.send( method, *args, &block )
     end
   end
 end

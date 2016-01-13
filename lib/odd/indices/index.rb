@@ -66,8 +66,9 @@ module Odd
         return Marshal.load( io )
       end
 
-      def self.[]( models, attribute, *right )
-        return self.new( models, attribute, Node[*right] )
+      def self.[]( models, attribute = nil, root = nil )
+        return load( models ) if File.exists?( models )
+        return self.new( models, attribute, root )
       end
     end
   end
